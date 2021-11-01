@@ -1,0 +1,1 @@
+g++ src/main.cpp src/database.cpp -o mysql_con -L/usr/include/mysql -lmysqlclient && ./mysql_con

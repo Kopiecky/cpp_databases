@@ -1,14 +1,29 @@
 #include <mysql/mysql.h>
 #include <iostream>
 
-#define NUM_OF_ELEMENTS 4
-
-typedef struct Connection_Details_s
+#define NUM_OF_DETAILS 4
+class MySQL
 {
-    const char *server, *user, *password, *database;
-} Connection_Details_t;
+    private:
+        typedef enum Detail_Types_e
+        {
+            SERVER,
+            USER,
+            PASSWORD,
+            DATABASE
+        } Detail_Types_t;
 
+        const char* details[NUM_OF_DETAILS];
+        const char* query;
 
-Connection_Details_t create_details();
-MYSQL* mysql_connection_setup(Connection_Details_t mysql_details);
-MYSQL_RES* mysql_execute_query(MYSQL* connection, const char* const sql_query);
+        MYSQL* con;
+        MYSQL_RES* res;
+        MYSQL_ROW row;
+
+    public:
+        MySQL(const char* server, const char* user, const char* database, const char* password);
+        ~MySQL();
+        int mysql_connection_setup();
+        int mysql_execute_query(const char* const sql_query);
+        int mysql_show_results();
+};

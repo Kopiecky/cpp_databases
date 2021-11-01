@@ -2,24 +2,17 @@
 
 int main(int argc, char const **argv)
 {
-    MYSQL* con;
-    MYSQL_RES* res;
-    MYSQL_ROW row;
+    char server[] = "localhost";
+    char user[] = "daniel";
+    char database[] = "PBD";
+    char password[] = "password"; 
     char query[] = "select * from dane_pomiarowe";
-    unsigned int i = 0;
 
-    Connection_Details_t connection_details = create_details();
+    MySQL db(server, user, database, password);
 
-    con = mysql_connection_setup(connection_details);
-    res = mysql_execute_query(con, query);
-
-    while ((row = mysql_fetch_row(res)) != NULL)
-    {
-        std::cout << row[0] << " | " << row[1] << " | " << row[2] << " | " << std::endl;
-    }
-
-    mysql_free_result(res);
-    mysql_close(con);
+    db.mysql_connection_setup();
+    db.mysql_execute_query(query);
+    db.mysql_show_results();
 
     return 0;
 }
