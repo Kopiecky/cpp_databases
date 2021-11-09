@@ -1,0 +1,1 @@
+c++ --std=c++11 main.cpp mongoManager.cpp $(pkg-config --cflags --libs libmongocxx) -Wl,-rpath,/usr/local/lib -o NoSQL
