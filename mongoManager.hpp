@@ -1,5 +1,6 @@
 #include <mongocxx/instance.hpp>
 #include <mongocxx/client.hpp>
+#include <string>
 
 class MongoManager
 {
@@ -11,7 +12,7 @@ class MongoManager
     mongocxx::database dataBase;
     mongocxx::collection collection; 
 
-    char* nameDb; //Tutaj zmienic
+    char* nameDb;
 
     /*----------public data types------------*/
     public:
@@ -25,7 +26,9 @@ class MongoManager
     
     void accessCollection(char* myCollection);
     void accessCollection(void);
+    void displayAllDocuments(void);
+    void insertData(std::string name, int value);
 
     private:
-    bsoncxx::document::value createDocument(void);
+    bsoncxx::document::value createDocument(std::string name, int value);
 };

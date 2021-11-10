@@ -24,26 +24,30 @@ using bsoncxx::builder::stream::open_document;
 
  /*----------constructor and destructor-------------*/
 
-MongoManager::MongoManager(const char* myUri, const char* myDb, size_t len)  //Brzydkie przesylanie argumentu przez wskaznik
+MongoManager::MongoManager(const char* myUri, const char* myDb, size_t len) //Brzydkie przesylanie argumentu przez wskaznik
 {
-    nameDb = new char[len]; //Tutaj zmienic
-    
-    memcpy(nameDb, myDb, len); //Tutaj zmienic
+    nameDb = new char[len + 1];
+    memcpy(nameDb, myDb, len + 1);
+    printf("MongoManager spec Uri:%s\n", nameDb);
 
-    printf("MongoManager here Uri:%s\n", myUri);
+    bsoncxx::string::view_or_value dbName = nameDb;
 
     mongocxx::uri uri(myUri);
     client = new mongocxx::client(uri);
-    dataBase = client[nameDb]; //Tutaj zmienic
+    dataBase = client->database(dbName); 
 }
 
 MongoManager::MongoManager(const char* myDb, size_t len)
 {
-    std::cout<<"MongoManager here default URI\n";
+    nameDb = new char[len + 1];
+    memcpy(nameDb, myDb, len + 1);
+     printf("MongoManager default Uri:%s\n", nameDb);
+
+    bsoncxx::string::view_or_value dbName = nameDb;
 
     mongocxx::uri uri("mongodb://localhost:27017");
     client = new mongocxx::client(uri);
-    dataBase = client[myDb];
+    dataBase = client->database(dbName);
 }
 
 MongoManager::~MongoManager()
@@ -51,27 +55,20 @@ MongoManager::~MongoManager()
     std::cout<<"MongoManager bye\n";
 
     delete client;
-    delete nameDb; //Tutaj zmienic
+    delete nameDb;
 }
 
 
 
  /*----------private methods-------------*/
 
-bsoncxx::document::value MongoManager::createDocument()
+bsoncxx::document::value MongoManager::createDocument(std::string name, int value)
 {
-    auto builder = bsoncxx::builder::stream::document{};
-    bsoncxx::document::value doc_value = builder
-    << "name" << "MongoDB"
-    << "type" << "database"
-    << "count" << 1
-    << "info" << bsoncxx::builder::stream::open_document
-        << "x" << 203
-        << "y" << 102
-    << bsoncxx::builder::stream::close_document
-    << bsoncxx::builder::stream::finalize;
-
-    return doc_value;
+    bsoncxx::builder::basic::document builder;
+    builder.append(bsoncxx::builder::basic::kvp(name, value));
+    bsoncxx::document::value obj = builder.extract();
+    
+    return obj;
 }
 
 
@@ -86,4 +83,22 @@ void MongoManager::accessCollection(char* myCollection)
 void MongoManager::accessCollection()
 {
     collection = dataBase["user"];
+}
+
+ void MongoManager::insertData(std::string name, int value)
+ {
+    auto document = createDocument(name, value);
+    std::cout<<"HERE\n";
+    collection.insert_one(document.view());
+    std::cout<<"HERE HERE\n";
+ }
+
+
+void MongoManager::displayAllDocuments()
+{
+    mongocxx::cursor cursor = collection.find({});
+    for(auto doc : cursor) 
+    {
+        std::cout << bsoncxx::to_json(doc) << "\n";
+    }
 }
