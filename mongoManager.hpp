@@ -28,6 +28,8 @@ class MongoManager
     void accessCollection(void);
     void displayAllDocuments(void);
     void insertData(std::string name, int value);
+    void displayLastDocument(void);
+    void deleteAllDocuments(void);
 
     private:
     bsoncxx::document::value createDocument(std::string name, int value);

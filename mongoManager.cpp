@@ -85,13 +85,11 @@ void MongoManager::accessCollection()
     collection = dataBase["user"];
 }
 
- void MongoManager::insertData(std::string name, int value)
- {
+void MongoManager::insertData(std::string name, int value)
+{
     auto document = createDocument(name, value);
-    std::cout<<"HERE\n";
     collection.insert_one(document.view());
-    std::cout<<"HERE HERE\n";
- }
+}
 
 
 void MongoManager::displayAllDocuments()
@@ -101,4 +99,19 @@ void MongoManager::displayAllDocuments()
     {
         std::cout << bsoncxx::to_json(doc) << "\n";
     }
+}
+
+void MongoManager::displayLastDocument()
+{
+    bsoncxx::stdx::optional<bsoncxx::document::value> maybe_result = collection.find_one({});
+    if(maybe_result) 
+    {
+        std::cout << bsoncxx::to_json(*maybe_result) << "\n";
+    }
+}
+
+void MongoManager::deleteAllDocuments()
+{
+    bsoncxx::stdx::optional<mongocxx::result::delete_result> result =
+    collection.delete_many({});
 }
