@@ -1,29 +1,38 @@
+#ifndef DATABASE_HEADER
+#define DATABASE_HEADER
+
 #include <iostream>
 #include <mysql/mysql.h>
 
-#define NUM_OF_DETAILS 4
+#define NUM_OF_DETAILS 5
 class MySQL
 {
 private:
-    typedef enum Detail_Types_e
+    typedef enum Argument_Types_e
     {
         SERVER,
         USER,
+        DATABASE,
         PASSWORD,
-        DATABASE
-    } Detail_Types_t;
+        QUERY
+    } Argument_Types_t;
 
     const char* details[NUM_OF_DETAILS];
-    const char* query;
 
     MYSQL* con;
     MYSQL_RES* res;
     MYSQL_ROW row;
 
+private:
+    void mysql_askForPassword();
+    void mysql_askForQuery();
+
 public:
-    MySQL(const char* server, const char* user, const char* database, const char* password);
+    MySQL(const char** const arguments);
     ~MySQL();
     int mysql_connection_setup();
-    int mysql_execute_query(const char* const sql_query);
+    int mysql_execute_query();
     int mysql_show_results();
 };
+
+#endif

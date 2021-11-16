@@ -1,3 +1,5 @@
+#ifndef SERIAL_HEADER
+#define SERIAL_HEADER
 class Serial
 {
 private:
@@ -52,3 +54,5 @@ public:
     int serial_write(const void* const msg, unsigned int size);
     int serial_read(void* buffer, unsigned int size);
 };
+
+#endif

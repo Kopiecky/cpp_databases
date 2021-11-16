@@ -1,29 +1,50 @@
 #include "database.hpp"
+#include <string.h>
 
-MySQL::MySQL(const char* server, const char* user, const char* database, const char* password)
+MySQL::MySQL(const char** const arguments)
 {
-    MySQL::details[SERVER]   = server;
-    MySQL::details[USER]     = user;
-    MySQL::details[DATABASE] = database;
-    MySQL::details[PASSWORD] = password;
+    details[SERVER]   = arguments[SERVER];
+    details[USER]     = arguments[USER];
+    details[DATABASE] = arguments[DATABASE];
 }
 
 MySQL::~MySQL()
 {
-    mysql_free_result(MySQL::res);
-    mysql_close(MySQL::con);
+    mysql_free_result(res);
+    mysql_close(con);
+}
+
+void MySQL::mysql_askForPassword()
+{
+    std::string pass;
+
+    std::getline(std::cin, pass);
+
+    details[PASSWORD] = strdup(pass.data());
+}
+
+void MySQL::mysql_askForQuery()
+{
+    std::string query;
+
+    std::getline(std::cin, query);
+
+    details[QUERY] = strdup(query.data());
 }
 
 int MySQL::mysql_connection_setup()
 {
-    MySQL::con = mysql_init(NULL);
+    mysql_askForPassword();
+    mysql_askForQuery();
+
+    con = mysql_init(NULL);
 
     if (!mysql_real_connect(
             con,
-            MySQL::details[SERVER],
-            MySQL::details[USER],
-            MySQL::details[PASSWORD],
-            MySQL::details[DATABASE],
+            details[SERVER],
+            details[USER],
+            details[PASSWORD],
+            details[DATABASE],
             0,
             NULL,
             0))
@@ -34,27 +55,26 @@ int MySQL::mysql_connection_setup()
     return 0;
 }
 
-int MySQL::mysql_execute_query(const char* const sql_query)
+int MySQL::mysql_execute_query()
 {
-    MySQL::query = sql_query;
-    if (mysql_query(MySQL::con, sql_query))
+    if (mysql_query(con, details[QUERY]))
     {
-        std::cout << "MySQL Query Error: " << mysql_error(MySQL::con) << std::endl;
+        std::cout << "MySQL Query Error: " << mysql_error(con) << std::endl;
         exit(1);
     }
-    MySQL::res = mysql_use_result(MySQL::con);
+    res = mysql_use_result(con);
     return 0;
 }
 
 int MySQL::mysql_show_results()
 {
-    std::cout << std::endl << "DATABASE: " << MySQL::details[DATABASE] << std::endl;
-    std::cout << "QUERY: " << MySQL::query << std::endl;
+    std::cout << std::endl << "DATABASE: " << details[DATABASE] << std::endl;
+    std::cout << "QUERY: " << details[QUERY] << std::endl;
     std::cout << "RESULT:" << std::endl << std::endl;
 
-    while ((MySQL::row = mysql_fetch_row(MySQL::res)) != NULL)
+    while ((row = mysql_fetch_row(res)) != NULL)
     {
-        std::cout << MySQL::row[0] << " | " << MySQL::row[1] << " | " << MySQL::row[2]
+        std::cout << row[0] << " | " << row[1] << " | " << row[2]
                   << " | " << std::endl;
     }
 

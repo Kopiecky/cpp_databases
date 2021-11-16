@@ -1,5 +1,7 @@
-#include <stdint.h>
+#ifndef URM_37_HEADER
+#define URM_37_HEADER
 
+#include <stdint.h>
 #include "../serial/serial.hpp"
 
 class Urm_37
@@ -16,3 +18,5 @@ public:
     ~Urm_37();
     unsigned int readSensor(const char* const type);
 };
+
+#endif
