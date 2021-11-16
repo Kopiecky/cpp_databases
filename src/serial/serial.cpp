@@ -1,17 +1,22 @@
 #include "serial.hpp"
-#include <termios.h>
-#include <string.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <iostream>
 
-Serial::Serial(const char* const port, const char* const parity, unsigned int baudrate, unsigned int stopBits, unsigned int numberOfBits)
+#include <fcntl.h>
+#include <iostream>
+#include <string.h>
+#include <termios.h>
+#include <unistd.h>
+
+Serial::Serial(
+    const char* const port,
+    const char* const parity,
+    unsigned int baudrate,
+    unsigned int stopBits,
+    unsigned int numberOfBits)
 {
-    params = 
-    {
-        .m_port = port,
-        .m_baudrate = baudrate,
-        .m_parity = checkParity(parity),
+    params = {
+        .m_port         = port,
+        .m_baudrate     = baudrate,
+        .m_parity       = checkParity(parity),
         .m_numberOfBits = checkNumberOfBits(numberOfBits),
     };
     serial_open();
@@ -27,15 +32,15 @@ Serial::Parity_t Serial::checkParity(const char* const parity)
 {
     Parity_t ret;
 
-    if(!strcmp("EVEN", parity))
+    if (!strcmp("EVEN", parity))
     {
         ret = Parity_Even;
     }
-    if(!strcmp("ODD", parity))
+    if (!strcmp("ODD", parity))
     {
         ret = Parity_Odd;
     }
-    if(!strcmp("NONE", parity))
+    if (!strcmp("NONE", parity))
     {
         ret = Parity_Off;
     }
@@ -97,7 +102,7 @@ int Serial::serial_open()
             tty.c_cflag |= (CLOCAL | CREAD);
             tty.c_cflag &= ~CSIZE;
 
-        switch (params.m_numberOfBits)
+            switch (params.m_numberOfBits)
             {
                 case NumberOfBits_5:
                     tty.c_cflag |= CS5;
@@ -127,7 +132,7 @@ int Serial::serial_open()
                     tty.c_cflag &= ~PARODD;
                     break;
             }
-            
+
             switch (params.m_stopBits)
             {
                 case StopBits_1:
