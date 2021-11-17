@@ -4,15 +4,15 @@
 #include "database/database.hpp"
 #include "urm_37/urm_37.hpp"
 
-int main(int argc, char const** argv)
+int main(int argc, const char** argv)
 {
-    Args args;
-    args.parseArgs(argc, argv);
-    MySQL db(args.arguments);
+    MySQL db(argc, argv);
 
-    db.mysql_connection_setup();
-    db.mysql_execute_query();
-    db.mysql_show_results();
-
+    while (1)
+    {
+        db.mysql_connection_setup();
+        db.mysql_execute_query();
+        db.mysql_show_results();
+    }
     return 0;
 }

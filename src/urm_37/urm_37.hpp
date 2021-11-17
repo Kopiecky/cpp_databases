@@ -10,7 +10,8 @@ private:
     const uint8_t read_temperature_cmd[4] = {0x11, 0x00, 0x00, 0x11};
     const uint8_t read_distance_cmd[4]    = {0x22, 0x00, 0x00, 0x22};
     const char* port;
-    uint8_t buffer[4] = {0};
+    uint8_t buffer[4];
+    
     Serial serial;
 
 public:

@@ -1,11 +1,22 @@
 #include "database.hpp"
+
 #include <string.h>
 
-MySQL::MySQL(const char** const arguments)
+MySQL::MySQL(int argc, const char** argv)
 {
-    details[SERVER]   = arguments[SERVER];
-    details[USER]     = arguments[USER];
-    details[DATABASE] = arguments[DATABASE];
+    int error = args.parseArgs(argc, argv);
+    if (!error)
+    {
+        for (unsigned int i = 0; i < NUM_OF_ARGS - 1; ++i)
+        {
+            details[i] = args.arguments[i];
+        }
+    }
+    else
+    {
+        exit(1);
+    }
+    args.~Args();
 }
 
 MySQL::~MySQL()
@@ -18,6 +29,7 @@ void MySQL::mysql_askForPassword()
 {
     std::string pass;
 
+    std::cout << "Password: ";
     std::getline(std::cin, pass);
 
     details[PASSWORD] = strdup(pass.data());
@@ -27,6 +39,7 @@ void MySQL::mysql_askForQuery()
 {
     std::string query;
 
+    std::cout << "Query: ";
     std::getline(std::cin, query);
 
     details[QUERY] = strdup(query.data());
@@ -35,23 +48,18 @@ void MySQL::mysql_askForQuery()
 int MySQL::mysql_connection_setup()
 {
     mysql_askForPassword();
-    mysql_askForQuery();
 
     con = mysql_init(NULL);
 
     if (!mysql_real_connect(
-            con,
-            details[SERVER],
-            details[USER],
-            details[PASSWORD],
-            details[DATABASE],
-            0,
-            NULL,
-            0))
+            con, details[SERVER], details[USER], details[PASSWORD], details[DATABASE], 0, NULL, 0))
     {
         std::cout << "Connection error: " << mysql_error(con) << std::endl;
         exit(1);
     }
+
+    mysql_askForQuery();
+    
     return 0;
 }
 
@@ -74,8 +82,7 @@ int MySQL::mysql_show_results()
 
     while ((row = mysql_fetch_row(res)) != NULL)
     {
-        std::cout << row[0] << " | " << row[1] << " | " << row[2]
-                  << " | " << std::endl;
+        std::cout << row[0] << " | " << row[1] << " | " << row[2] << " | " << std::endl;
     }
 
     std::cout << std::endl;
