@@ -66,18 +66,21 @@ int Args::parseArgs(int argc, const char** argv)
 
     if (argc <= 1)
     {
-        ret = showError(INPUT);
+        ret         = showError(INPUT);
         flags.error = 1;
     }
     else if ((argc > 1) && (argc % 2 == 0))
     {
-        ret = showError(INPUT);
-        flags.error = 1;
-    }
-    else if (!strcmp(argv[1], ARGS_HELP))
-    {
-        ret       = showHelp();
-        flags.help = 1;
+        if (!(strcmp(argv[1], ARGS_HELP)))
+        {
+            ret        = showHelp();
+            flags.help = 1;
+        }
+        else
+        {
+            ret         = showError(INPUT);
+            flags.error = 1;
+        }
     }
     else
     {
@@ -105,7 +108,7 @@ int Args::parseArgs(int argc, const char** argv)
             }
             else
             {
-                ret = showError(VALUE);
+                ret        = showError(VALUE);
                 flags.help = 1;
                 break;
             }

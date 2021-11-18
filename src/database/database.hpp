@@ -1,10 +1,7 @@
 #ifndef DATABASE_HEADER
 #define DATABASE_HEADER
 
-#include <iostream>
 #include <mysql/mysql.h>
-
-#include "../args/args.hpp"
 
 #define NUM_OF_DETAILS 5
 class MySQL
@@ -19,21 +16,21 @@ private:
         QUERY
     } Argument_Types_t;
 
-    const char* details[NUM_OF_DETAILS];
-
-    Args args;
     MYSQL* con;
     MYSQL_RES* res;
     MYSQL_ROW row;
 
+    const char* details[NUM_OF_DETAILS];
+
 private:
+    void mysql_parseParameters(const char** const parameters);
     void mysql_askForPassword();
     void mysql_askForQuery();
 
 public:
-    MySQL(int argc, const char** argv);
+    MySQL();
     ~MySQL();
-    int mysql_connection_setup();
+    int mysql_connection_setup(const char** const parameters);
     int mysql_execute_query();
     int mysql_show_results();
 };
