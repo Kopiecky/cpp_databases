@@ -17,7 +17,7 @@ Server::~Server() {}
 
 void Server::insertData(int data)
 {
-    insert = "insert into dane_pomiarowe(czas, pomiar) values(now(), ";
+    insert = "insert into dane_pomiarowe(czas, dane) values(now(), ";
     std::string dataString = std::to_string(data);
     dataString += ");";
     insert.append(dataString);
