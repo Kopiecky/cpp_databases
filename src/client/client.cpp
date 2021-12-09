@@ -22,9 +22,12 @@ Client::Client(const char** const details)
         }
         db.showResults();
     }
-    if(!type.compare("nosql"))
+    if (!type.compare("nosql"))
     {
         std::cout << "NoSQL client\n";
+        myMongo = new MongoManager();
+        myMongo->accessCollection();
+        myMongo->displayAllDocuments();
     }
 }
 
@@ -36,4 +39,9 @@ const std::string Client::askForQuery()
     return query;
 }
 
-Client::~Client() {}
+
+
+Client::~Client() 
+{
+    //delete myMongo;
+}

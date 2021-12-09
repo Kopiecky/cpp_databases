@@ -1,3 +1,6 @@
+#ifndef DATABASE_MONGO
+#define DATABASE_MONGO
+
 #include <mongocxx/instance.hpp>
 #include <mongocxx/client.hpp>
 #include <string>
@@ -34,3 +37,5 @@ class MongoManager
     private:
     bsoncxx::document::value createDocument(std::string timestamp, std::string name, int value);
 };
+
+#endif

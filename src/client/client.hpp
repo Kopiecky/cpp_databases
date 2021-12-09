@@ -4,6 +4,7 @@
 #include <string>
 
 #include "database/databaseMySQL.hpp"
+#include "database/mongoManager.hpp"
 
 class Client
 {
@@ -11,6 +12,7 @@ class Client
 
 private:
     const std::string askForQuery();
+    MongoManager* myMongo;
 
 public:
     Client(const char** const details);

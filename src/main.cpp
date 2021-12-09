@@ -20,14 +20,16 @@ int main(int argc, const char** argv)
         {
             ptrs.push_back(str.data());
         }
-
-        if (!arguments[0].compare("client"))
+        if (!arguments.empty())
         {
-            Client client(ptrs.data());
-        }
-        if (!arguments[0].compare("server"))
-        {
-            Server server(ptrs.data());
+            if (!arguments[0].compare("client"))
+            {
+                Client client(ptrs.data());
+            }
+            else if (!arguments[0].compare("server"))
+            {
+                Server server(ptrs.data());
+            }
         }
     }
 
